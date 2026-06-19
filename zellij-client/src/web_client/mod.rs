@@ -69,6 +69,8 @@ pub fn start_web_client(
     custom_server_cert: Option<PathBuf>,
     custom_server_key: Option<PathBuf>,
     startup_timeout: Option<u64>,
+    dangerously_expose_webserver: bool,
+    dangerously_expose_webserver_read_only: bool,
 ) {
     std::panic::set_hook({
         Box::new(move |info| {
@@ -153,6 +155,21 @@ pub fn start_web_client(
                     "Web Server started on {} port {}",
                     web_server_ip, web_server_port
                 );
+                if dangerously_expose_webserver {
+                    println!("");
+                    println!("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    println!("!! WARNING: DANGEROUSLY EXPOSING WEB SERVER - NO AUTHENTICATION    !!");
+                    println!("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    println!("");
+                }
+                if dangerously_expose_webserver_read_only {
+                    println!("");
+                    println!("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    println!("!! WARNING: DANGEROUSLY EXPOSING WEB SERVER (READ ONLY)            !!");
+                    println!("!! NO AUTHENTICATION                                               !!");
+                    println!("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    println!("");
+                }
                 (runtime, listener, tls_config)
             },
             Err(e) => {
@@ -172,6 +189,8 @@ pub fn start_web_client(
         None,
         web_server_ip,
         web_server_port,
+        dangerously_expose_webserver,
+        dangerously_expose_webserver_read_only,
     ));
 }
 
@@ -185,6 +204,8 @@ pub async fn serve_web_client(
     client_os_api_factory: Option<Arc<dyn ClientOsApiFactory>>,
     web_server_ip: IpAddr,
     web_server_port: u16,
+    _dangerously_expose_webserver: bool,
+    _dangerously_expose_webserver_read_only: bool,
 ) {
     let Some(config_file_path) = config_file_path.or_else(|| Config::default_config_file_path())
     else {
@@ -216,6 +237,10 @@ pub async fn serve_web_client(
         session_manager,
         client_os_api_factory,
         is_https,
+        #[cfg(feature = "dangerously_expose_webserver")]
+        dangerously_expose_webserver: _dangerously_expose_webserver,
+        #[cfg(feature = "dangerously_expose_webserver")]
+        dangerously_expose_webserver_read_only: _dangerously_expose_webserver_read_only,
     };
 
     tokio::spawn({
@@ -237,7 +262,7 @@ pub async fn serve_web_client(
         .route("/ws/terminal", any(ws_handler_terminal))
         .route("/ws/terminal/{session}", any(ws_handler_terminal))
         .route("/session", post(create_new_client))
-        .route_layer(middleware::from_fn(auth_middleware))
+        .route_layer(middleware::from_fn_with_state(state.clone(), auth_middleware))
         .route("/", get(serve_html))
         .route("/{session}", get(serve_html))
         .route("/assets/{*path}", get(get_static_asset))

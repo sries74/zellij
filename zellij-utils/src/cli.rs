@@ -260,6 +260,26 @@ pub struct WebCli {
         display_order = 16
     )]
     pub key: Option<PathBuf>,
+
+    /// If set, the web server will not require an authentication token.
+    #[cfg(feature = "dangerously_expose_webserver")]
+    #[clap(
+        long,
+        value_parser,
+        conflicts_with_all(&["stop", "status", "create-token", "revoke-token", "revoke-all-tokens"]),
+        display_order = 17
+    )]
+    pub dangerously_expose_webserver: bool,
+
+    /// If set, the web server will not require an authentication token and will be read-only.
+    #[cfg(feature = "dangerously_expose_webserver")]
+    #[clap(
+        long,
+        value_parser,
+        conflicts_with_all(&["stop", "status", "create-token", "revoke-token", "revoke-all-tokens", "dangerously-expose-webserver"]),
+        display_order = 18
+    )]
+    pub dangerously_expose_webserver_read_only: bool,
 }
 
 impl WebCli {

@@ -297,6 +297,16 @@ fn main() {
     } else if let Some(Command::Web(web_opts)) = &opts.command {
         if web_opts.get_start() {
             let daemonize = web_opts.daemonize;
+            let (dangerously_expose_webserver, dangerously_expose_webserver_read_only) = {
+                #[cfg(feature = "dangerously_expose_webserver")]
+                {
+                    (web_opts.dangerously_expose_webserver, web_opts.dangerously_expose_webserver_read_only)
+                }
+                #[cfg(not(feature = "dangerously_expose_webserver"))]
+                {
+                    (false, false)
+                }
+            };
             commands::start_web_server(
                 opts.clone(),
                 daemonize,
@@ -305,6 +315,8 @@ fn main() {
                 web_opts.cert.clone(),
                 web_opts.key.clone(),
                 web_opts.server_startup_timeout,
+                dangerously_expose_webserver,
+                dangerously_expose_webserver_read_only,
             );
         } else if web_opts.stop {
             match commands::stop_web_server() {
