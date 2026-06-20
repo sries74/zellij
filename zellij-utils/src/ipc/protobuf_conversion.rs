@@ -1024,6 +1024,7 @@ impl From<crate::input::actions::Action>
             TogglePanePinnedByPaneIdAction,
             ToggleTabAction,
             ToggleThemeAction,
+            ShareCurrentSessionAction,
             UndoRenamePaneAction,
             UndoRenamePaneByPaneIdAction,
             UndoRenameTabAction,
@@ -1386,6 +1387,9 @@ impl From<crate::input::actions::Action>
             },
             crate::input::actions::Action::ToggleTheme => {
                 ActionType::ToggleTheme(ToggleThemeAction {})
+            },
+            crate::input::actions::Action::ShareCurrentSession => {
+                ActionType::ShareCurrentSession(ShareCurrentSessionAction {})
             },
             crate::input::actions::Action::SwitchSession {
                 name,
@@ -2254,6 +2258,7 @@ impl TryFrom<crate::client_server_contract::client_server_contract::Action>
             ActionType::SetDarkTheme(_) => Ok(crate::input::actions::Action::SetDarkTheme),
             ActionType::SetLightTheme(_) => Ok(crate::input::actions::Action::SetLightTheme),
             ActionType::ToggleTheme(_) => Ok(crate::input::actions::Action::ToggleTheme),
+            ActionType::ShareCurrentSession(_) => Ok(crate::input::actions::Action::ShareCurrentSession),
             ActionType::SwitchSession(switch_session_action) => {
                 Ok(crate::input::actions::Action::SwitchSession {
                     name: switch_session_action.name.clone(),

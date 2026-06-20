@@ -776,6 +776,8 @@ pub enum CliAction {
         #[clap(short, long, value_parser)]
         pane_id: Option<String>,
     },
+    /// Share the current session via the web server
+    ShareSession,
     /// Change focus to the next pane
     FocusNextPane,
     /// Change focus to the previous pane

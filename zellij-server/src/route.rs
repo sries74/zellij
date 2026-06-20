@@ -1100,6 +1100,11 @@ pub(crate) fn route_action(
                 .send_to_screen(screen_instr)
                 .with_context(err_context)?;
         },
+        Action::ShareCurrentSession => {
+            senders
+                .send_to_server(ServerInstruction::ShareCurrentSession(client_id))
+                .with_context(err_context)?;
+        },
         Action::Quit => {
             senders
                 .send_to_server(ServerInstruction::ClientExit(

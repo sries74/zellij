@@ -155,6 +155,8 @@ pub enum Action {
         resize: Resize,
         direction: Option<Direction>,
     },
+    /// Share the current session via the web server.
+    ShareCurrentSession,
     /// Switch focus to next pane in specified direction.
     FocusNextPane,
     FocusPreviousPane,
@@ -819,6 +821,7 @@ impl Action {
                 },
                 None => Ok(vec![Action::Resize { resize, direction }]),
             },
+            CliAction::ShareSession => Ok(vec![Action::ShareCurrentSession]),
             CliAction::FocusNextPane => Ok(vec![Action::FocusNextPane]),
             CliAction::FocusPreviousPane => Ok(vec![Action::FocusPreviousPane]),
             CliAction::FocusPaneId { pane_id } => {

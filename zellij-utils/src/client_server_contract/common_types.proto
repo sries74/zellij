@@ -278,6 +278,7 @@ message Action {
     SetLightThemeAction set_light_theme = 138;
     ToggleThemeAction toggle_theme = 139;
     ToggleMobileModeAction toggle_mobile_mode = 140;
+    ShareCurrentSessionAction share_current_session = 141;
   }
 }
 
@@ -329,6 +330,7 @@ message DetachAction {}
 message SetDarkThemeAction {}
 message SetLightThemeAction {}
 message ToggleThemeAction {}
+message ShareCurrentSessionAction {}
 message CopyAction {}
 message ConfirmAction {}
 message DenyAction {}

@@ -409,6 +409,8 @@ pub mod action {
         ToggleTheme(super::ToggleThemeAction),
         #[prost(message, tag="140")]
         ToggleMobileMode(super::ToggleMobileModeAction),
+        #[prost(message, tag="141")]
+        ShareCurrentSession(super::ShareCurrentSessionAction),
     }
 }
 // Action message definitions (all 92 variants)
@@ -569,6 +571,10 @@ pub struct SetLightThemeAction {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ToggleThemeAction {
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ShareCurrentSessionAction {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
